@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="controllers.NoteAPITest$CountingMethods" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-11-17T15:07:00" hostname="Jessicas-MacBook-Pro.local" time="0.036">
+  <properties/>
+  <testcase name="numberOfActiveNotesCalculatedCorrectly()" classname="controllers.NoteAPITest$CountingMethods" time="0.036"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

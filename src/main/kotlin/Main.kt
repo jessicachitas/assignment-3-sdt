@@ -112,37 +112,6 @@ fun listArchivedNotes() {
     println(noteAPI.listArchivedNotes())
 }
 
-//fun updateNote() {
-//    listNotes()
-//    if (noteAPI.numberOfNotes() > 0) {
-//        val indexToUpdate = readNextInt("Enter the index of the note to update: ")
-//        if (noteAPI.isValidIndex(indexToUpdate)) {
-//            val noteSelection = readNextInt("What would you like to update? 1. Title, 2. Priority, 3. Category : ")
-//            if (noteSelection == 1) {
-//            val noteTitle = readNextLine("Enter a title for the note: ")
-//            }
-//            else if (noteSelection == 2) {
-//            val notePriority = readNextInt("Enter a priority (1-low, 2, 3, 4, 5-high): ")
-//            }
-//            else if (noteSelection == 3) {
-//            val noteCategory = readNextLine("Enter a category for the note: ")
-//            }
-//            else {
-//                println("Invalid choice")
-//                return
-//            }
-//
-//            if (noteAPI.updateNote(indexToUpdate, Note(noteTitle, notePriority, noteCategory, false))){
-//                println("Update Successful")
-//            } else {
-//                println("Update Failed")
-//            }
-//        } else {
-//            println("There are no notes for this index number")
-//        }
-//    }
-//}
-
 fun updateNote() {
     listNotes()
     if (noteAPI.numberOfNotes() > 0) {
