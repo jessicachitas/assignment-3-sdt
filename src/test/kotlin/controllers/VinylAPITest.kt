@@ -1,6 +1,6 @@
 package controllers
 
-import models.Note
+import models.Vinyl
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import persistence.JSONSerializer
@@ -8,23 +8,23 @@ import persistence.XMLSerializer
 import java.io.File
 import kotlin.test.assertEquals
 
-class NoteAPITest {
+class VinylAPITest {
 
-    private var learnKotlin: Note? = null
-    private var summerHoliday: Note? = null
-    private var codeApp: Note? = null
-    private var testApp: Note? = null
-    private var swim: Note? = null
-    private var populatedNotes: NoteAPI? = NoteAPI(XMLSerializer(File("notes.xml")))
-    private var emptyNotes: NoteAPI? = NoteAPI(XMLSerializer(File("notes.xml")))
+    private var learnKotlin: Vinyl? = null
+    private var summerHoliday: Vinyl? = null
+    private var codeApp: Vinyl? = null
+    private var testApp: Vinyl? = null
+    private var swim: Vinyl? = null
+    private var populatedNotes: VinylAPI? = VinylAPI(XMLSerializer(File("notes.xml")))
+    private var emptyNotes: VinylAPI? = VinylAPI(XMLSerializer(File("notes.xml")))
 
     @BeforeEach
     fun setup() {
-        learnKotlin = Note("Learning Kotlin", 5, "College", false)
-        summerHoliday = Note("Summer Holiday to France", 1, "Holiday", false)
-        codeApp = Note("Code App", 4, "Work", false)
-        testApp = Note("Test App", 4, "Work", false)
-        swim = Note("Swim - Pool", 3, "Hobby", false)
+        learnKotlin = Vinyl("Learning Kotlin", 5, "College", false)
+        summerHoliday = Vinyl("Summer Holiday to France", 1, "Holiday", false)
+        codeApp = Vinyl("Code App", 4, "Work", false)
+        testApp = Vinyl("Test App", 4, "Work", false)
+        swim = Vinyl("Swim - Pool", 3, "Hobby", false)
 
         populatedNotes!!.add(learnKotlin!!)
         populatedNotes!!.add(summerHoliday!!)
@@ -49,20 +49,20 @@ class NoteAPITest {
 
         @Test
         fun `adding a Note to a populated list adds to ArrayList`() {
-            val newNote = Note("Study Lambdas", 1, "College", false)
+            val newVinyl = Vinyl("Study Lambdas", 1, "College", false)
             assertEquals(5, populatedNotes!!.numberOfNotes())
-            assertTrue(populatedNotes!!.add(newNote))
+            assertTrue(populatedNotes!!.add(newVinyl))
             assertEquals(6, populatedNotes!!.numberOfNotes())
-            assertEquals(newNote, populatedNotes!!.findNote(populatedNotes!!.numberOfNotes() - 1))
+            assertEquals(newVinyl, populatedNotes!!.findNote(populatedNotes!!.numberOfNotes() - 1))
         }
 
         @Test
         fun `adding a Note to an empty list adds to ArrayList`() {
-            val newNote = Note("Study Lambdas", 1, "College", false)
+            val newVinyl = Vinyl("Study Lambdas", 1, "College", false)
             assertEquals(0, emptyNotes!!.numberOfNotes())
-            assertTrue(emptyNotes!!.add(newNote))
+            assertTrue(emptyNotes!!.add(newVinyl))
             assertEquals(1, emptyNotes!!.numberOfNotes())
-            assertEquals(newNote, emptyNotes!!.findNote(emptyNotes!!.numberOfNotes() - 1))
+            assertEquals(newVinyl, emptyNotes!!.findNote(emptyNotes!!.numberOfNotes() - 1))
         }
 
     }
@@ -190,9 +190,9 @@ class NoteAPITest {
     inner class UpdateNotes {
         @Test
         fun `updating a note that does not exist returns false`(){
-            assertFalse(populatedNotes!!.updateNote(6, Note("Updating Note", 2, "Work", false)))
-            assertFalse(populatedNotes!!.updateNote(-1, Note("Updating Note", 2, "Work", false)))
-            assertFalse(emptyNotes!!.updateNote(0, Note("Updating Note", 2, "Work", false)))
+            assertFalse(populatedNotes!!.updateNote(6, Vinyl("Updating Vinyl", 2, "Work", false)))
+            assertFalse(populatedNotes!!.updateNote(-1, Vinyl("Updating Vinyl", 2, "Work", false)))
+            assertFalse(emptyNotes!!.updateNote(0, Vinyl("Updating Vinyl", 2, "Work", false)))
         }
 
         @Test
@@ -204,8 +204,8 @@ class NoteAPITest {
             assertEquals("Hobby", populatedNotes!!.findNote(4)!!.noteCategory)
 
             //update note 5 with new information and ensure contents updated successfully
-            assertTrue(populatedNotes!!.updateNote(4, Note("Updating Note", 2, "College", false)))
-            assertEquals("Updating Note", populatedNotes!!.findNote(4)!!.noteTitle)
+            assertTrue(populatedNotes!!.updateNote(4, Vinyl("Updating Vinyl", 2, "College", false)))
+            assertEquals("Updating Vinyl", populatedNotes!!.findNote(4)!!.noteTitle)
             assertEquals(2, populatedNotes!!.findNote(4)!!.notePriority)
             assertEquals("College", populatedNotes!!.findNote(4)!!.noteCategory)
         }
@@ -217,11 +217,11 @@ class NoteAPITest {
         @Test
         fun `saving and loading an empty collection in XML doesn't crash app`() {
             // Saving an empty notes.XML file.
-            val storingNotes = NoteAPI(XMLSerializer(File("notes.xml")))
+            val storingNotes = VinylAPI(XMLSerializer(File("notes.xml")))
             storingNotes.store()
 
             //Loading the empty notes.xml file into a new object
-            val loadedNotes = NoteAPI(XMLSerializer(File("notes.xml")))
+            val loadedNotes = VinylAPI(XMLSerializer(File("notes.xml")))
             loadedNotes.load()
 
             //Comparing the source of the notes (storingNotes) with the XML loaded notes (loadedNotes)
@@ -233,14 +233,14 @@ class NoteAPITest {
         @Test
         fun `saving and loading an loaded collection in XML doesn't loose data`() {
             // Storing 3 notes to the notes.XML file.
-            val storingNotes = NoteAPI(XMLSerializer(File("notes.xml")))
+            val storingNotes = VinylAPI(XMLSerializer(File("notes.xml")))
             storingNotes.add(testApp!!)
             storingNotes.add(swim!!)
             storingNotes.add(summerHoliday!!)
             storingNotes.store()
 
             //Loading notes.xml into a different collection
-            val loadedNotes = NoteAPI(XMLSerializer(File("notes.xml")))
+            val loadedNotes = VinylAPI(XMLSerializer(File("notes.xml")))
             loadedNotes.load()
 
             //Comparing the source of the notes (storingNotes) with the XML loaded notes (loadedNotes)
@@ -255,11 +255,11 @@ class NoteAPITest {
         @Test
         fun `saving and loading an empty collection in JSON doesn't crash app`() {
             // Saving an empty notes.json file.
-            val storingNotes = NoteAPI(JSONSerializer(File("notes.json")))
+            val storingNotes = VinylAPI(JSONSerializer(File("notes.json")))
             storingNotes.store()
 
             //Loading the empty notes.json file into a new object
-            val loadedNotes = NoteAPI(JSONSerializer(File("notes.json")))
+            val loadedNotes = VinylAPI(JSONSerializer(File("notes.json")))
             loadedNotes.load()
 
             //Comparing the source of the notes (storingNotes) with the json loaded notes (loadedNotes)
@@ -271,14 +271,14 @@ class NoteAPITest {
         @Test
         fun `saving and loading an loaded collection in JSON doesn't loose data`() {
             // Storing 3 notes to the notes.json file.
-            val storingNotes = NoteAPI(JSONSerializer(File("notes.json")))
+            val storingNotes = VinylAPI(JSONSerializer(File("notes.json")))
             storingNotes.add(testApp!!)
             storingNotes.add(swim!!)
             storingNotes.add(summerHoliday!!)
             storingNotes.store()
 
             //Loading notes.json into a different collection
-            val loadedNotes = NoteAPI(JSONSerializer(File("notes.json")))
+            val loadedNotes = VinylAPI(JSONSerializer(File("notes.json")))
             loadedNotes.load()
 
             //Comparing the source of the notes (storingNotes) with the json loaded notes (loadedNotes)

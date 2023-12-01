@@ -1,8 +1,8 @@
-import controllers.NoteAPI
-import models.Note
+import controllers.VinylAPI
+import models.Vinyl
+import models.Collection
 import mu.KotlinLogging
 import persistence.JSONSerializer
-import persistence.XMLSerializer
 import java.lang.System.exit
 import utils.ScannerInput
 import utils.ScannerInput.readNextInt
@@ -11,10 +11,10 @@ import java.io.File
 
 private val logger = KotlinLogging.logger {}
 //private val noteAPI = NoteAPI(XMLSerializer(File("notes.xml")))
-private val noteAPI = NoteAPI(JSONSerializer(File("notes.json")))
+private val vinylAPI = VinylAPI(JSONSerializer(File("vinyls.json")))
 
 fun main(args: Array<String>) {
-    println("Notes App V4.0")
+    println("Vinyl Collection App V1.0")
     runMenu()
 }
 
@@ -53,12 +53,12 @@ fun runMenu() {
     do {
         val option = mainMenu()
         when (option) {
-            1  -> addNote()
-            2  -> listNotes()
-            3  -> updateNote()
-            4  -> deleteNote()
-            5 -> archiveNote()
-            6 -> searchNotes()
+            1  -> addVinyl()
+            2  -> listVinyls()
+            3  -> updateVinyl()
+            4  -> deleteVinyl()
+            5 -> archiveVinyl()
+            6 -> searchVinyls()
             7 -> save()
             8 -> load()
             0  -> exitApp()
@@ -67,11 +67,13 @@ fun runMenu() {
     } while (true)
 }
 
-fun addNote(){
-    val noteTitle = readNextLine("Enter a title for the note: ")
-    val notePriority = readNextInt("Enter a priority (1-low, 2, 3, 4, 5-high): ")
-    val noteCategory = readNextLine("Enter a category for the note: ")
-    val isAdded = noteAPI.add(Note(noteTitle, notePriority, noteCategory, false))
+fun addVinyl(){
+    val albumName = readNextLine("Please the album name for the vinyl: ")
+    val artist = readNextInt("Please enter the artist that created the vinyl: ")
+    val genre = readNextLine("Please enter the genre of the album: ")
+    val sizeInches = readNextLine("What size is the vinyl? (7in, 10in, 12in): ")
+    val colour = readNextLine("Please enter the colour of the vinyl: ")
+    val isAdded = vinylAPI.add(Vinyl(albumName, artist, genre, sizeInches, colour,false))
 
     if (isAdded) {
         println("Added Successfully")
@@ -80,8 +82,8 @@ fun addNote(){
     }
 }
 
-fun listNotes() {
-    if (noteAPI.numberOfNotes() > 0) {
+fun listVinyls() {
+    if (vinylAPI.numberOfVinyls() > 0) {
         val option = readNextInt(
             """
                   > --------------------------------
@@ -93,10 +95,9 @@ fun listNotes() {
          > ==>> """.trimMargin(">"))
 
         when (option) {
-            1 -> listAllNotes();
-            2 -> listActiveNotes();
-            3 -> listArchivedNotes();
-            4 -> listNotesByPriority();
+            1 -> listAllVinyls();
+            2 -> listActiveVinyls();
+            3 -> listArchivedVinyls();
             else -> println("Invalid option entered: " + option);
         }
     } else {
@@ -104,24 +105,26 @@ fun listNotes() {
     }
 }
 
-fun listAllNotes() {
-    println(noteAPI.listAllNotes())
+fun listAllVinyls() {
+    println(vinylAPI.listAllVinyls())
 }
 
-fun listArchivedNotes() {
-    println(noteAPI.listArchivedNotes())
+fun listArchivedVinyls() {
+    println(vinylAPI.listArchivedVinyls())
 }
 
-fun updateNote() {
-    listNotes()
-    if (noteAPI.numberOfNotes() > 0) {
-        val indexToUpdate = readNextInt("Enter the index of the note to update: ")
-        if (noteAPI.isValidIndex(indexToUpdate)) {
-            val noteTitle = readNextLine("Enter a title for the note: ")
-            val notePriority = readNextInt("Enter a priority (1-low, 2, 3, 4, 5-high): ")
-            val noteCategory = readNextLine("Enter a category for the note: ")
+fun updateVinyl() {
+    listVinyls()
+    if (vinylAPI.numberOfVinyls() > 0) {
+        val indexToUpdate = readNextInt("Enter the index of the vinyl to update: ")
+        if (vinylAPI.isValidIndex(indexToUpdate)) {
+            val albumName = readNextLine("Please the album name for the vinyl: ")
+            val artist = readNextInt("Please enter the artist that created the vinyl: ")
+            val genre = readNextLine("Please enter the genre of the album: ")
+            val sizeInches = readNextLine("What size is the vinyl? (7in, 10in, 12in): ")
+            val colour = readNextLine("Please enter the colour of the vinyl: ")
 
-            if (noteAPI.updateNote(indexToUpdate, Note(noteTitle, notePriority, noteCategory, false))){
+            if (vinylAPI.updateVinyl(indexToUpdate, Vinyl(albumName, artist, genre, sizeInches, colour,false))){
                 println("Update Successful")
             } else {
                 println("Update Failed")
@@ -133,34 +136,30 @@ fun updateNote() {
 }
 
 
-fun deleteNote(){
-    listNotes()
-    if (noteAPI.numberOfNotes() > 0) {
+fun deleteVinyl(){
+    listVinyls()
+    if (vinylAPI.numberOfVinyls() > 0) {
         val indexToDelete = readNextInt("Enter the index of the note to delete: ")
-        val noteToDelete = noteAPI.deleteNote(indexToDelete)
-        if (noteToDelete != null) {
-            println("Delete Successful! Deleted note: ${noteToDelete.noteTitle}")
+        val vinylToDelete = vinylAPI.deleteVinyl(indexToDelete)
+        if (vinylToDelete != null) {
+            println("Delete Successful! Deleted note: ${vinylToDelete.albumName} - ${vinylToDelete.artist}")
         } else {
             println("Delete NOT Successful")
         }
     }
 }
 
-fun listActiveNotes() {
-    println(noteAPI.listActiveNotes())
+fun listActiveVinyls() {
+    println(vinylAPI.listActiveVinyls())
 }
 
-fun listNotesByPriority() {
-    println(noteAPI.listNotesBySelectedPriority(readNextInt("Enter priority: ")))
-}
-
-fun archiveNote() {
-    listActiveNotes()
-    if (noteAPI.numberOfActiveNotes() > 0) {
+fun archiveVinyl() {
+    listActiveVinyls()
+    if (vinylAPI.numberOfActiveVinyls() > 0) {
         //only ask the user to choose the note to archive if active notes exist
         val indexToArchive = readNextInt("Enter the index of the note to archive: ")
         //pass the index of the note to NoteAPI for archiving and check for success.
-        if (noteAPI.archiveNote(indexToArchive)) {
+        if (vinylAPI.archiveVinyl(indexToArchive)) {
             println("Archive Successful!")
         } else {
             println("Archive NOT Successful")
@@ -168,11 +167,11 @@ fun archiveNote() {
     }
 }
 
-fun searchNotes() {
+fun searchVinyls() {
     val searchTitle = readNextLine("Enter the description to search by: ")
-    val searchResults = noteAPI.searchByTitle(searchTitle)
+    val searchResults = vinylAPI.searchByAlbumName(searchTitle)
     if (searchResults.isEmpty()) {
-        println("No notes found")
+        println("No vinyls found")
     } else {
         println(searchResults)
     }
@@ -180,7 +179,7 @@ fun searchNotes() {
 
 fun save() {
     try {
-        noteAPI.store()
+        vinylAPI.store()
     } catch (e: Exception) {
         System.err.println("Error writing to file: $e")
     }
@@ -188,7 +187,7 @@ fun save() {
 
 fun load() {
     try {
-        noteAPI.load()
+        vinylAPI.load()
     } catch (e: Exception) {
         System.err.println("Error reading from file: $e")
     }
